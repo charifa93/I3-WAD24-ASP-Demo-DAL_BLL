@@ -9,17 +9,20 @@ using System.Data.SqlTypes;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using DAL.Mappers;
+using Microsoft.Extensions.Configuration;
 
 
 namespace DAL.Services
 {
-    public class CocktailService : ICocktailRepository<Cocktail>
+    public class CocktailService :BaseService,  ICocktailRepository<Cocktail>
     {
-        private const string ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=WAD24-DemoASP-DB;Integrated Security=True;";
+        public CocktailService(IConfiguration config): base(config, "Main-DB") { }
+        
+
 
         public IEnumerable<Cocktail> Get()
         {
-            using(SqlConnection connection = new SqlConnection(ConnectionString))
+            using(SqlConnection connection = new SqlConnection(_connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand()) 
                 {
@@ -39,7 +42,7 @@ namespace DAL.Services
 
         public Cocktail Get(Guid id)
         {
-            using(SqlConnection connection = new SqlConnection(ConnectionString))
+            using(SqlConnection connection = new SqlConnection(_connectionString))
             {
                 using(SqlCommand command = connection.CreateCommand())
                 {
@@ -58,7 +61,7 @@ namespace DAL.Services
         }
         public Guid Insert(Cocktail cocktail)
         {
-            using(SqlConnection connection = new SqlConnection(ConnectionString)) 
+            using(SqlConnection connection = new SqlConnection(_connectionString)) 
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
@@ -69,7 +72,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue(nameof(Cocktail.Description), cocktail.Description);
                     command.Parameters.AddWithValue(nameof(Cocktail.Instructions), cocktail.Instructions);
                     command.Parameters.AddWithValue(nameof(Cocktail.CreatedAt), cocktail.CreatedAt);
-                    command.Parameters.AddWithValue(nameof(Cocktail.CreatedBy), cocktail.CreatedBy);
+                    command.Parameters.AddWithValue("user_id", (object?)cocktail.CreatedBy ?? DBNull.Value);
                     connection.Open();
                     return (Guid)command.ExecuteScalar();
                 }
@@ -78,7 +81,7 @@ namespace DAL.Services
 
         public void Update(Guid id, Cocktail cocktail)
         {
-            using( SqlConnection connection = new SqlConnection(ConnectionString)) 
+            using( SqlConnection connection = new SqlConnection(_connectionString)) 
             {
                 using(SqlCommand command = connection.CreateCommand()) 
                 {
@@ -96,7 +99,7 @@ namespace DAL.Services
         }
         public void Delete(Guid id)
         {
-            using(SqlConnection connection = new SqlConnection(ConnectionString)) 
+            using(SqlConnection connection = new SqlConnection(_connectionString)) 
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
@@ -105,7 +108,6 @@ namespace DAL.Services
                     command.Parameters.AddWithValue(nameof(id),id);
                     connection.Open();
                     command.ExecuteNonQuery();
-
                 }
             }
         }        

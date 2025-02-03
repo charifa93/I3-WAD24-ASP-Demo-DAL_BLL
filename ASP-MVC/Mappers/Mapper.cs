@@ -125,5 +125,29 @@ namespace ASP_MVC.Mappers
                 cocktail?.CreatedBy
             );
         }
+
+        public static Cocktail ToBLL(this CocktailEditForm cocktail)
+        {
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new Cocktail(
+                Guid.Empty,
+                cocktail.Name,
+                cocktail.Description,
+                cocktail.Instructions,
+                DateOnly.FromDateTime(DateTime.Now),
+                Guid.Empty
+                );
+        }
+
+        public static CocktailDeleteForm ToDelete(this Cocktail cocktail)
+        {
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new CocktailDeleteForm()
+            {
+                Name = cocktail.Name,
+                Description = cocktail.Description,
+                CreatedBy = cocktail.CreatedBy
+            };
+        }
     }
 }
