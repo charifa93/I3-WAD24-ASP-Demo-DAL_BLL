@@ -1,5 +1,7 @@
-﻿using ASP_MVC.Models.User;
+﻿using ASP_MVC.Models.Cocktail;
+using ASP_MVC.Models.User;
 using BLL.Entities;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ASP_MVC.Mappers
 {
@@ -83,6 +85,45 @@ namespace ASP_MVC.Mappers
                 Last_Name = user.Last_Name,
                 Email = user.Email
             };
+        }
+
+
+        public static CocktailListItem ToListItem(this Cocktail cocktail)
+        {
+            if(cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new CocktailListItem()
+            {
+                Name = cocktail.Name,
+                Description = cocktail.Description,
+                CreatedBy = cocktail.CreatedBy
+            };
+
+        }
+        public static CocktailDetails ToDetails(this Cocktail cocktail) 
+        {
+            return new CocktailDetails()
+            {
+                Cocktail_Id = cocktail.Cocktail_Id,
+                Name = cocktail.Name,
+                Description = cocktail.Description,
+                Instruction = cocktail.Instructions,
+                CreatedAt = DateOnly.FromDateTime(cocktail.CreatedAt),
+                CreatedBy = cocktail.CreatedBy
+
+            };
+        }
+
+        public static Cocktail ToBLL(this CocktailCreateForm cocktail)
+        {
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new Cocktail(
+
+                cocktail.Name,
+                cocktail.Description,
+                cocktail.Instructions,
+                //DateOnly.FromDateTime(cocktail.CreatedAt),
+                cocktail?.CreatedBy
+            );
         }
     }
 }

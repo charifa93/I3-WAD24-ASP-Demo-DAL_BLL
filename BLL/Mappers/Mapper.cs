@@ -36,5 +36,32 @@ namespace BLL.Mappers
                 DisabledAt = (user.IsDisabled) ? new DateTime() : null
             };
         }
+
+        public static Cocktail ToBLL(this D.Cocktail cocktail) 
+        {
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new Cocktail(
+                cocktail.Cocktail_Id,
+                cocktail.Name,
+                cocktail.Description,
+                cocktail.Instructions,
+                cocktail.CreatedAt ,
+                cocktail.CreatedBy);
+        }
+
+        public static D.Cocktail ToDAL (this Cocktail cocktail) 
+        {
+            if(cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new D.Cocktail()
+            { 
+                Cocktail_Id = cocktail.Cocktail_Id,
+                Name = cocktail.Name,
+                Description = cocktail.Description,
+                Instructions = cocktail.Instructions,
+                CreatedAt = cocktail.CreatedAt,
+                CreatedBy = cocktail.CreatedBy,
+            };
+        }
+
     }
 }
