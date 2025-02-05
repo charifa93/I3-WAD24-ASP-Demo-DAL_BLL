@@ -24,6 +24,11 @@ namespace ASP_MVC.Models.Cocktail
 
         [DisplayName ("Create By :")]
         [DataType(DataType.Date)]
+        public string? Creator { get; set; }
+
+
+
+        [ScaffoldColumn (false)]
         public Guid? CreatedBy { get; set; }
 
     }

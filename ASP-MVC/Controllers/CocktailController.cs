@@ -3,16 +3,19 @@ using ASP_MVC.Mappers;
 using BLL.Entities;
 using Common.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using ASP_MVC.Handlers;
 
 namespace ASP_MVC.Controllers
 {
     public class CocktailController : Controller
     {
         private ICocktailRepository<Cocktail> _cocktailService;
+        private SessionManager _sessionManager;
 
-        public CocktailController(ICocktailRepository<Cocktail> cocktailService)
+        public CocktailController(ICocktailRepository<Cocktail> cocktailService , SessionManager sessionManager)
         {
             _cocktailService = cocktailService;
+            _sessionManager = sessionManager;
 
         }
 
@@ -73,7 +76,7 @@ namespace ASP_MVC.Controllers
         {
             try
             {
-                CocktailEditForm model = _cocktailRepository.Get(id).ToEditForm();
+                CocktailEditForm model = _cocktailService.Get(id).ToEditForm();
                 return View(model);
             }
             catch (Exception)

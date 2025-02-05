@@ -13,19 +13,27 @@ namespace BLL.Services
     public class UserService : IUserRepository<User>
     {
         private IUserRepository<DAL.Entities.User> _service;
+        private ICocktailRepository<DAL.Entities.Cocktail> _cocktailService;
 
-        public UserService(IUserRepository<DAL.Entities.User> userService)
+        public UserService(IUserRepository<DAL.Entities.User> userService , ICocktailRepository<DAL.Entities.Cocktail> cocktailService)
         {
-            _service = userService;    
+            _service = userService;   
+            _cocktailService = cocktailService;
         }
 
         public IEnumerable<User> Get()
         {
             return _service.Get().Select(dal => dal.ToBLL());
+
         }
 
-        public User Get(Guid user_id) { 
-            return _service.Get(user_id).ToBLL();
+
+        public User Get(Guid user_id) {
+
+            //retournee le User avec la liste des cocktails qui y a cree 
+            User user =  _service.Get(user_id).ToBLL();
+            user.cocktails = _cocktailService.GetFromUser(user_id).Select(dal=>dal.ToBLL());
+            return user;
         }
 
         public Guid Insert(User user)

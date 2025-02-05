@@ -17,12 +17,15 @@ namespace BLL.Entities
 
         private DateTime? _disabledAt;
 
+
         //public DateTime? DisabledAt { get { return _disabledAt; } }
 
         public bool IsDisabled
         {
             get { return _disabledAt is not null; }
         }
+
+        public IEnumerable<Cocktail> cocktails { get; set; }
         public User(Guid user_Id, string first_Name, string last_Name, string email, string password, DateTime createdAt, DateTime? disabledAt)
         {
             User_Id = user_Id;

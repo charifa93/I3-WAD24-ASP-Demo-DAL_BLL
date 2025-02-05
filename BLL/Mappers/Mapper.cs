@@ -45,7 +45,7 @@ namespace BLL.Mappers
                 cocktail.Name,
                 cocktail.Description,
                 cocktail.Instructions,
-                cocktail.CreatedAt ,
+                DateOnly.FromDateTime(cocktail.CreatedAt),
                 cocktail.CreatedBy);
         }
 
@@ -58,7 +58,7 @@ namespace BLL.Mappers
                 Name = cocktail.Name,
                 Description = cocktail.Description,
                 Instructions = cocktail.Instructions,
-                CreatedAt = cocktail.CreatedAt,
+                CreatedAt = cocktail.CreatedAt.ToDateTime(new TimeOnly()),
                 CreatedBy = cocktail.CreatedBy,
             };
         }

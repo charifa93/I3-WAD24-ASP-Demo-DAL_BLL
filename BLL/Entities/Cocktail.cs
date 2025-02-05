@@ -18,8 +18,9 @@ namespace BLL.Entities
         public string Instructions { get; set; }
         public DateOnly CreatedAt { get; set; }
         public Guid? CreatedBy { get; set; }
+        public User? Creator { get; set; }
 
-        public Cocktail(Guid cocktail_Id, string name, string? description, string instructions, DateTime createdAt, Guid? createdBy)
+        public Cocktail(Guid cocktail_Id, string name, string? description, string instructions, DateOnly createdAt, Guid? createdBy)
         {
             Cocktail_Id = cocktail_Id;
             Name = name;

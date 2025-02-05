@@ -110,7 +110,27 @@ namespace DAL.Services
                     command.ExecuteNonQuery();
                 }
             }
-        }        
+        }
 
+        public IEnumerable<Cocktail> GetFromUser(Guid user_id)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SP_Cocktail_GetByUserId";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue(nameof(user_id),user_id);
+                    connection.Open();
+                    using (SqlDataReader Reader = command.ExecuteReader())
+                    {
+                        while (Reader.Read())
+                        {
+                            yield return Reader.ToCocktail();
+                        }
+                    }
+                }
+            }
+        }
     }
 }

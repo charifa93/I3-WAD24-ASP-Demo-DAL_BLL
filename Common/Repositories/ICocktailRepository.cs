@@ -8,6 +8,7 @@ namespace Common.Repositories
 {
     public interface ICocktailRepository<TCocktail> : ICRUDRepository<TCocktail , Guid>
     {
+        IEnumerable<TCocktail> GetFromUser( Guid user_id);
        
     }
 }

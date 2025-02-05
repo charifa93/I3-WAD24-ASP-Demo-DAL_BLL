@@ -26,7 +26,8 @@ namespace ASP_MVC.Mappers
                 First_Name = user.First_Name,
                 Last_Name = user.Last_Name,
                 Email = user.Email,
-                CreatedAt = DateOnly.FromDateTime(user.CreatedAt)
+                CreatedAt = DateOnly.FromDateTime(user.CreatedAt),
+                Cocktails = user.cocktails.Select(bll => bll.ToListItem())
             };
         }
 
@@ -107,9 +108,9 @@ namespace ASP_MVC.Mappers
                 Name = cocktail.Name,
                 Description = cocktail.Description,
                 Instruction = cocktail.Instructions,
-                CreatedAt = DateOnly.FromDateTime(cocktail.CreatedAt),
-                CreatedBy = cocktail.CreatedBy
-
+                CreatedAt = cocktail.CreatedAt,
+                Creator = (cocktail.Creator is  null ) ? null : $"{cocktail.Creator.First_Name} {cocktail.Creator.Last_Name}",
+                CreatedBy= cocktail.CreatedBy,
             };
         }
 
@@ -149,5 +150,16 @@ namespace ASP_MVC.Mappers
                 CreatedBy = cocktail.CreatedBy
             };
         }
+        public static CocktailEditForm ToEditForm(this Cocktail cocktail)
+        {
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new CocktailEditForm()
+            {
+                Name = cocktail.Name,
+                Description = cocktail.Description,
+                Instructions = cocktail.Instructions
+            };
+        }
+
     }
 }
