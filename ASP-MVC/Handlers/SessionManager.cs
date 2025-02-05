@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using ASP_MVC.Models.Cocktail;
+using System.Text.Json;
 
 namespace ASP_MVC.Handlers
 {
@@ -32,32 +33,59 @@ namespace ASP_MVC.Handlers
                 }
             }
         }
-        public void Login(ConnectedUser user) 
+        public void Login(ConnectedUser user)
         {
             ConnectedUser = user;
         }
-        public void Logout() 
+        public void Logout()
         {
             ConnectedUser = null;
         }
 
-        public Top5 Top5Cocktails
+        public IEnumerable<ListItemMin> RecentlyVisitesCocktails
         {
-            get { return JsonSerializer.Deserialize<Top5>(_session.GetString(nameof(Top5Cocktails)) ?? "null"); }
-            set
+            get
             {
-                if(value is null)
-                {
-                    _session.Remove(nameof(Top5Cocktails));
-                }
-                else
-                {
-                    for (int i = 0; i >= 5; i++) {
+                string? json = _session.GetString(nameof(RecentlyVisitesCocktails));
 
-                        _session.SetString(nameof(Top5Cocktails), JsonSerializer.Serialize(value));
-                    }
-                }
+                if (json is null) return new ListItemMin[0];
+                return JsonSerializer.Deserialize<ListItemMin[]>(json);
+            }
+            private set
+            {
+                string json = JsonSerializer.Serialize(value);
+                _session.SetString(nameof(RecentlyVisitesCocktails), json);
             }
         }
+        public void AddVisitedCocktail(ListItemMin cocktail)
+        {
+            //ligne permettant d(inserer le cocktail 
+            List<ListItemMin> cocktails = new List<ListItemMin>(RecentlyVisitesCocktails);
+            ListItemMin? cocktailInList = cocktails.Where(c => c.Cocktail_Id == cocktail.Cocktail_Id).SingleOrDefault();
+            if(cocktailInList is not null )
+                {
+                   cocktails.Remove(cocktailInList);
+                }
+            if(cocktails.Count == 5) 
+            {
+                cocktails.Remove(cocktails[5]);
+            }
+            cocktails.Insert(0, cocktail);
+            RecentlyVisitesCocktails = cocktails;
+            
+
+        }
+        public void AddVisitedCocktail(Guid cocktail_id , string cocktail_name)
+        {
+            ListItemMin cocktail = new ListItemMin()
+            {
+                Cocktail_Id = cocktail_id,
+                Name = cocktail_name
+            };
+            AddVisitedCocktail(cocktail);
+            
+
+        }
+
     }
 }

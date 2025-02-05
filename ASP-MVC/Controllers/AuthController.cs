@@ -1,4 +1,5 @@
 ﻿using ASP_MVC.Handlers;
+using ASP_MVC.Handlers.ActionFilters;
 using ASP_MVC.Models.Auth;
 using BLL.Entities;
 using Common.Repositories;
@@ -22,8 +23,15 @@ namespace ASP_MVC.Controllers
             return RedirectToAction(nameof(Login));
         }
 
+        //attribute qui en a cree dans ActionFilter
+        [AnnonymousNeeded]
         public IActionResult Login()
         {
+            //methode compliquer de verifier si utilisateur il a le droit ou non d'acceder a la page login 
+            //if (_sessionManager.ConnectedUser is not null) 
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
             return View();
         }
 
@@ -33,7 +41,7 @@ namespace ASP_MVC.Controllers
             {
                 if (!ModelState.IsValid) throw new ArgumentException(nameof(form));
                 Guid id = _userService.CheckPassword(form.Email, form.Password);
-                //C'est ici que nous définirons la variable de session
+                //C'est ici que nous définirons la variable de session :
                 ConnectedUser user = new ConnectedUser()
                 {
                     User_Id = id,
