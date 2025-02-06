@@ -1,15 +1,15 @@
 ﻿using ASP_MVC.Models.Cocktail;
 using ASP_MVC.Models.User;
 using BLL.Entities;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ASP_MVC.Mappers
 {
     internal static class Mapper
     {
+        #region Users
         public static UserListItem ToListItem(this User user)
         {
-            if(user is null) throw new ArgumentNullException(nameof(user));
+            if (user is null) throw new ArgumentNullException(nameof(user));
             return new UserListItem()
             {
                 User_Id = user.User_Id,
@@ -18,7 +18,8 @@ namespace ASP_MVC.Mappers
             };
         }
 
-        public static UserDetails ToDetails(this User user) {
+        public static UserDetails ToDetails(this User user)
+        {
             if (user is null) throw new ArgumentNullException(nameof(user));
             return new UserDetails()
             {
@@ -27,7 +28,7 @@ namespace ASP_MVC.Mappers
                 Last_Name = user.Last_Name,
                 Email = user.Email,
                 CreatedAt = DateOnly.FromDateTime(user.CreatedAt),
-                Cocktails = user.cocktails.Select(bll => bll.ToListItem())
+                Cocktails = user.Cocktails.Select(bll => bll.ToListItem())
             };
         }
 
@@ -41,7 +42,8 @@ namespace ASP_MVC.Mappers
                 user.Email,
                 user.Password,
                 DateTime.Now,
-                null
+                null,
+                "User"
                 );
             /*return new User(
                 user.First_Name,
@@ -50,10 +52,11 @@ namespace ASP_MVC.Mappers
                 user.Password);*/
         }
 
-        public static UserEditForm ToEditForm (this User user)
+        public static UserEditForm ToEditForm(this User user)
         {
-            if(user is null) throw new ArgumentNullException(nameof(user));
-            return new UserEditForm() { 
+            if (user is null) throw new ArgumentNullException(nameof(user));
+            return new UserEditForm()
+            {
                 First_Name = user.First_Name,
                 Last_Name = user.Last_Name,
                 Email = user.Email
@@ -62,7 +65,7 @@ namespace ASP_MVC.Mappers
 
         public static User ToBLL(this UserEditForm user)
         {
-            if(user is null) throw new ArgumentNullException(nameof(user));
+            if (user is null) throw new ArgumentNullException(nameof(user));
             /*return new User(
                 Guid.Empty,
                 user.First_Name,
@@ -70,7 +73,8 @@ namespace ASP_MVC.Mappers
                 user.Email,
                 "********",
                 DateTime.Now,
-                null
+                null,
+                "User"
                 );*/
             return new User(
                 user.First_Name,
@@ -81,36 +85,38 @@ namespace ASP_MVC.Mappers
         public static UserDelete ToDelete(this User user)
         {
             if (user is null) throw new ArgumentNullException(nameof(user));
-            return new UserDelete() { 
+            return new UserDelete()
+            {
                 First_Name = user.First_Name,
                 Last_Name = user.Last_Name,
                 Email = user.Email
             };
         }
-
-
+        #endregion
+        #region Cocktails
         public static CocktailListItem ToListItem(this Cocktail cocktail)
         {
-            if(cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
             return new CocktailListItem()
             {
+                Cocktail_Id = cocktail.Cocktail_Id,
                 Name = cocktail.Name,
-                Description = cocktail.Description,
-                CreatedBy = cocktail.CreatedBy
+                Description = cocktail.Description
             };
-
         }
-        public static CocktailDetails ToDetails(this Cocktail cocktail) 
+
+        public static CocktailDetails ToDetails(this Cocktail cocktail)
         {
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
             return new CocktailDetails()
             {
                 Cocktail_Id = cocktail.Cocktail_Id,
                 Name = cocktail.Name,
                 Description = cocktail.Description,
-                Instruction = cocktail.Instructions,
+                Instructions = cocktail.Instructions,
                 CreatedAt = cocktail.CreatedAt,
-                Creator = (cocktail.Creator is  null ) ? null : $"{cocktail.Creator.First_Name} {cocktail.Creator.Last_Name}",
-                CreatedBy= cocktail.CreatedBy,
+                Creator = (cocktail.Creator is null) ? null : $"{cocktail.Creator.First_Name} {cocktail.Creator.Last_Name}",
+                CreatedBy = cocktail.CreatedBy
             };
         }
 
@@ -118,13 +124,24 @@ namespace ASP_MVC.Mappers
         {
             if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
             return new Cocktail(
-
+                Guid.Empty,
                 cocktail.Name,
                 cocktail.Description,
                 cocktail.Instructions,
-                //DateOnly.FromDateTime(cocktail.CreatedAt),
-                cocktail?.CreatedBy
-            );
+                DateOnly.FromDateTime(DateTime.Now),
+                cocktail.CreatedBy
+                );
+        }
+
+        public static CocktailEditForm ToEditForm(this Cocktail cocktail)
+        {
+            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
+            return new CocktailEditForm()
+            {
+                Name = cocktail.Name,
+                Description = cocktail.Description,
+                Instructions= cocktail.Instructions
+            };
         }
 
         public static Cocktail ToBLL(this CocktailEditForm cocktail)
@@ -140,26 +157,16 @@ namespace ASP_MVC.Mappers
                 );
         }
 
-        public static CocktailDeleteForm ToDelete(this Cocktail cocktail)
+        public static CocktailDelete ToDelete(this Cocktail cocktail)
         {
             if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
-            return new CocktailDeleteForm()
+            return new CocktailDelete()
             {
-                Name = cocktail.Name,
-                Description = cocktail.Description,
+                Name= cocktail.Name,
+                Description= cocktail.Description,
                 CreatedBy = cocktail.CreatedBy
             };
         }
-        public static CocktailEditForm ToEditForm(this Cocktail cocktail)
-        {
-            if (cocktail is null) throw new ArgumentNullException(nameof(cocktail));
-            return new CocktailEditForm()
-            {
-                Name = cocktail.Name,
-                Description = cocktail.Description,
-                Instructions = cocktail.Instructions
-            };
-        }
-
+        #endregion
     }
 }

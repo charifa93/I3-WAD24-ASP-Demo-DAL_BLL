@@ -34,9 +34,10 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CreatedAt)
         </dd>
-        <h4>@Html.DisplayNameFor(Model=>Model.Cocktails)</h4>
-        <partial name="_CocktailsList" model = "Model.Cocktails" />
     </dl>
+    <h4>@Html.DisplayNameFor(model => model.Cocktails)</h4>
+    @* @Html.Partial("_CocktailsList", Model.Cocktails) *@
+    <partial name="_CocktailsList" model="Model.Cocktails"/>
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.User_Id }) |

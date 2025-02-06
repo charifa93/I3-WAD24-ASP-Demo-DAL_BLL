@@ -45,7 +45,8 @@ namespace ASP_MVC.Controllers
         }
 
         // GET: UserController/Create
-        [AnnonymousNeeded]
+
+        [AnonymousNeeded]
         public ActionResult Create()
         {
             return View();
@@ -54,8 +55,7 @@ namespace ASP_MVC.Controllers
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // l'attribue qui en a cree dans actionFilter :
-        [AnnonymousNeeded]
+        [AnonymousNeeded]
         public ActionResult Create(UserCreateForm form)
         {
             try
@@ -129,6 +129,31 @@ namespace ASP_MVC.Controllers
             catch
             {
                 return RedirectToAction(nameof(Delete), new { id = id });
+            }
+        }
+
+
+        //[AdminNeeded("Admin","Autor","User")]
+        [AdminNeeded]
+        public IActionResult ChangeRole(Guid id)
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //[AdminNeeded("Admin", "Autor", "User")]
+        [AdminNeeded]
+        public IActionResult ChangeRole(Guid id, IFormCollection collection)
+        {
+            try
+            {
+                //Vérifier le formulaire
+                //Demander un changement en DB
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return View();
             }
         }
     }

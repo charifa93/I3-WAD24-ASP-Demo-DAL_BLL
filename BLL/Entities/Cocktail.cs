@@ -8,9 +8,6 @@ namespace BLL.Entities
 {
     public class Cocktail
     {
-        private Guid empty1;
-        private DateOnly dateOnly;
-        private Guid empty2;
 
         public Guid Cocktail_Id { get; set; }
         public string Name { get; set; }
@@ -19,6 +16,7 @@ namespace BLL.Entities
         public DateOnly CreatedAt { get; set; }
         public Guid? CreatedBy { get; set; }
         public User? Creator { get; set; }
+
 
         public Cocktail(Guid cocktail_Id, string name, string? description, string instructions, DateOnly createdAt, Guid? createdBy)
         {
@@ -30,23 +28,5 @@ namespace BLL.Entities
             CreatedBy = createdBy;
         }
 
-        public Cocktail(string name, string? description, string instructions, Guid? createdBy)
-        {
-            Name = name;
-            Description = description;
-            Instructions = instructions;
-            //CreatedAt = createdAt;
-            CreatedBy = createdBy;
-        }
-
-        public Cocktail(Guid empty1, string name, string? description, string instructions, DateOnly dateOnly, Guid empty2)
-        {
-            this.empty1 = empty1;
-            Name = name;
-            Description = description;
-            Instructions = instructions;
-            this.dateOnly = dateOnly;
-            this.empty2 = empty2;
-        }
     }
 }

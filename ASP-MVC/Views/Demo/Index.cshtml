@@ -4,4 +4,5 @@
 @{
     int count = ViewContext.HttpContext.Session.GetInt32("CountVisitedPage") ?? 0;
 }
-<h1>vous avez visiter la page : {count}</h1>
+
+<h1>Nombre de pages visitées : @count</h1>

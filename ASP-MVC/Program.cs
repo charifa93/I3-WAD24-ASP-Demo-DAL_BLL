@@ -12,39 +12,35 @@ namespace ASP_MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            //ajoute d'implrmentation du service d'acces a l'httpContext
-            //(dans le but d'atteindre nos variable 
-            
+            //Ajout d'implémentation du service d'accès à l'HttpContext
+            //(dans le but d'atteindre nos variables de session en dehors du controller ou de la vue)
+            builder.Services.AddHttpContextAccessor();
 
-            //Ajout Configuration de session :
+            //Ajout d'implémentation des services nécessaires à l'utilisation de session :
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(
-                options =>
-                {
+                options => {
                     options.Cookie.Name = "CookieWad24";
                     options.Cookie.HttpOnly = true;
                     options.Cookie.IsEssential = true;
-                    options.IdleTimeout = TimeSpan.FromSeconds(10);
-                }
-                );
-            builder.Services.Configure<CookiePolicyOptions>(options => {
+                    options.IdleTimeout = TimeSpan.FromMinutes(10);
+                });
+            builder.Services.Configure<CookiePolicyOptions>(options => { 
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.Secure = CookieSecurePolicy.Always;
             });
 
-
-            //Ajoute de notre service de sessionManager
+            //Ajout de notre service de sessionManager
             builder.Services.AddScoped<SessionManager>();
 
             //Ajout de nos services : Ceux de la BLL et ceux de la DAL
             builder.Services.AddScoped<IUserRepository<BLL.Entities.User>, BLL.Services.UserService>();
             builder.Services.AddScoped<IUserRepository<DAL.Entities.User>, DAL.Services.UserService>();
-
-            builder.Services.AddScoped<ICocktailRepository<BLL.Entities.Cocktail> , BLL.Services.CocktailService>();
+            builder.Services.AddScoped<ICocktailRepository<BLL.Entities.Cocktail>, BLL.Services.CocktailService>();
             builder.Services.AddScoped<ICocktailRepository<DAL.Entities.Cocktail>, DAL.Services.CocktailService>();
 
-             var app = builder.Build();
-
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -54,9 +50,7 @@ namespace ASP_MVC
                 app.UseHsts();
             }
 
-            //demarrer la Session 
             app.UseSession();
-            // des regles pour Utiliser la session
             app.UseCookiePolicy();
 
             app.UseHttpsRedirection();

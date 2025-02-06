@@ -14,14 +14,16 @@ namespace DAL.Mappers
         {
             if (record is null) throw new ArgumentNullException(nameof(record));
             //if (record is null) return null;
-            return new User() {
+            return new User()
+            {
                 User_Id = (Guid)record[nameof(User.User_Id)],
                 First_Name = (string)record[nameof(User.First_Name)],
                 Last_Name = (string)record[nameof(User.Last_Name)],
                 Email = (string)record[nameof(User.Email)],
                 Password = "********",
                 CreatedAt = (DateTime)record[nameof(User.CreatedAt)],
-                DisabledAt = (record[nameof(User.DisabledAt)] is DBNull) ? null : (DateTime?)record[nameof(User.DisabledAt)]
+                DisabledAt = (record[nameof(User.DisabledAt)] is DBNull) ? null : (DateTime?)record[nameof(User.DisabledAt)],
+                Role = (string)record[nameof(User.Role)]
             };
         }
 
@@ -32,10 +34,10 @@ namespace DAL.Mappers
             {
                 Cocktail_Id = (Guid)record[nameof(Cocktail.Cocktail_Id)],
                 Name = (string)record[nameof(Cocktail.Name)],
-                Description = (string)record[nameof(Cocktail.Description)],
+                Description = (record[nameof(Cocktail.Description)] is DBNull) ? null : (string)record[nameof(Cocktail.Description)],
                 Instructions = (string)record[nameof(Cocktail.Instructions)],
                 CreatedAt = (DateTime)record[nameof(Cocktail.CreatedAt)],
-                CreatedBy = (Guid)record[nameof(Cocktail.CreatedBy)],
+                CreatedBy = (record[nameof(Cocktail.CreatedBy)] is DBNull) ? null : (Guid?)record[nameof(Cocktail.CreatedBy)]
             };
         }
     }

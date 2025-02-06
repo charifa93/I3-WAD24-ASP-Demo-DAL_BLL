@@ -1,54 +1,59 @@
-﻿using ASP_MVC.Models.Cocktail;
+﻿using ASP_MVC.Handlers;
+using ASP_MVC.Handlers.ActionFilters;
 using ASP_MVC.Mappers;
+using ASP_MVC.Models.Cocktail;
 using BLL.Entities;
 using Common.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ASP_MVC.Handlers;
 
 namespace ASP_MVC.Controllers
 {
     public class CocktailController : Controller
     {
-        private ICocktailRepository<Cocktail> _cocktailService;
+        private ICocktailRepository<Cocktail> _cocktailRepository;
         private SessionManager _sessionManager;
 
-        public CocktailController(ICocktailRepository<Cocktail> cocktailService , SessionManager sessionManager)
+        public CocktailController(
+            ICocktailRepository<Cocktail> cocktailRepository,
+            SessionManager sessionManager
+            )
         {
-            _cocktailService = cocktailService;
+            _cocktailRepository = cocktailRepository;
             _sessionManager = sessionManager;
-
         }
 
-        public ActionResult Index() 
+        // GET: CocktailController
+        public ActionResult Index()
         {
             try
             {
-                IEnumerable<CocktailListItem> model = _cocktailService.Get().Select(bll=> bll.ToListItem());
+                IEnumerable<CocktailListItem> model = _cocktailRepository.Get().Select(bll => bll.ToListItem());
                 return View(model);
-
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return RedirectToAction("Error", "Home");
-               
             }
         }
-        public ActionResult Details(Guid id) 
+
+        // GET: CocktailController/Details/5
+        public ActionResult Details(Guid id)
         {
-            try 
+            try
             {
-                CocktailDetails model = _cocktailService.Get(id).ToDetails();
+                CocktailDetails model = _cocktailRepository.Get(id).ToDetails();
+                _sessionManager.AddVisitedCocktail(model.Cocktail_Id, model.Name);
                 return View(model);
             }
-            catch
+            catch (Exception)
             {
                 return RedirectToAction("Error", "Home");
             }
-
         }
 
         // GET: CocktailController/Create
+        [ConnectionNeeded]
         public ActionResult Create()
         {
             return View();
@@ -57,12 +62,13 @@ namespace ASP_MVC.Controllers
         // POST: CocktailController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ConnectionNeeded]
         public ActionResult Create(CocktailCreateForm form)
         {
             try
             {
                 if (!ModelState.IsValid) throw new ArgumentException(nameof(form));
-                Guid id = _cocktailService.Insert(form.ToBLL());
+                Guid id = _cocktailRepository.Insert(form.ToBLL());
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch
@@ -72,15 +78,24 @@ namespace ASP_MVC.Controllers
         }
 
         // GET: CocktailController/Edit/5
+        //[ConnectionNeeded("Details", "Cocktail", true)]
+        [IsCreator]
+
         public ActionResult Edit(Guid id)
         {
             try
             {
-                CocktailEditForm model = _cocktailService.Get(id).ToEditForm();
+                /* Si nous devions vérifier si l'utilisateur connecté est le créateur, nous devrions passez par ces instructions
+                 * Mais il est préférable de le définir dans un attribut IAuthorizationFilter
+                Cocktail cocktail = _cocktailRepository.Get(id);
+                if (!(_sessionManager.ConnectedUser?.User_Id == cocktail.CreatedBy)) throw new InvalidOperationException("Vous n'êtes pas l'auteur de ce cocktail!");
+                CocktailEditForm model = cocktail.ToEditForm();*/
+                CocktailEditForm model = _cocktailRepository.Get(id).ToEditForm();
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -88,12 +103,14 @@ namespace ASP_MVC.Controllers
         // POST: CocktailController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //[ConnectionNeeded]
+        [IsCreator]
         public ActionResult Edit(Guid id, CocktailEditForm form)
         {
             try
             {
                 if (!ModelState.IsValid) throw new ArgumentException(nameof(form));
-                _cocktailService.Update(id, form.ToBLL());
+                _cocktailRepository.Update(id, form.ToBLL());
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch
@@ -103,11 +120,13 @@ namespace ASP_MVC.Controllers
         }
 
         // GET: CocktailController/Delete/5
+        //[ConnectionNeeded]
+        [IsCreator]
         public ActionResult Delete(Guid id)
         {
             try
             {
-                CocktailDeleteForm model = _cocktailService.Get(id).ToDelete();
+                CocktailDelete model = _cocktailRepository.Get(id).ToDelete();
                 return View(model);
             }
             catch (Exception)
@@ -119,11 +138,13 @@ namespace ASP_MVC.Controllers
         // POST: CocktailController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id, CocktailDeleteForm form)
+        //[ConnectionNeeded]
+        [IsCreator]
+        public ActionResult Delete(Guid id, CocktailDelete form)
         {
             try
             {
-                _cocktailService.Delete(id);
+                _cocktailRepository.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch

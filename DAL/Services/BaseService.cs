@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace DAL.Services
 {
-    public abstract class BaseService 
+    public abstract class BaseService
     {
         protected readonly string _connectionString;
 
-        public BaseService(IConfiguration config , string dbname)
+        public BaseService(IConfiguration config, string dbname)
         {
-            _connectionString = config.GetConnectionString(dbname) ?? throw new Exception ("Pas de connectionString correspondante.");
-
+            _connectionString = config.GetConnectionString(dbname) ?? throw new Exception("Pas de ConnectionString correspondante.");
         }
-
     }
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Common.Repositories
 {
-    public interface ICocktailRepository<TCocktail> : ICRUDRepository<TCocktail , Guid>
+    public interface ICocktailRepository<TCocktail> : ICRUDRepository<TCocktail, Guid>
     {
-        IEnumerable<TCocktail> GetFromUser( Guid user_id);
-       
+        IEnumerable<TCocktail> GetFromUser(Guid user_id);
     }
 }

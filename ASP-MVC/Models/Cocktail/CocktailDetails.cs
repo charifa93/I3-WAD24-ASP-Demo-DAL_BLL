@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace ASP_MVC.Models.Cocktail
 {
@@ -7,29 +7,19 @@ namespace ASP_MVC.Models.Cocktail
     {
         [ScaffoldColumn(false)]
         public Guid Cocktail_Id { get; set; }
-
-        [DisplayName ("Titre :")]
+        [DisplayName("Cocktail : ")]
         public string Name { get; set; }
-
-
-        [DisplayName ("Description :" )]
+        [DisplayName("Description : ")]
         public string? Description { get; set; }
-
-        [DisplayName ("Instructions : ")]
-        public string Instruction { get; set; }
-
-
-        [DisplayName ("Create At : ")]
-        public DateOnly CreatedAt { get; set; }
-
-        [DisplayName ("Create By :")]
-        [DataType(DataType.Date)]
+        [DisplayName("Recette : ")]
+        [DataType(DataType.MultilineText)]
+        public string Instructions { get; set; }
+        [DisplayName("Créé par : ")]
         public string? Creator { get; set; }
-
-
-
-        [ScaffoldColumn (false)]
+        [ScaffoldColumn(false)]
         public Guid? CreatedBy { get; set; }
-
+        [DisplayName("Créé le : ")]
+        [DataType(DataType.Date)]
+        public DateOnly CreatedAt { get; set; }
     }
 }

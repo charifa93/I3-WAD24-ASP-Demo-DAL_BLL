@@ -14,7 +14,7 @@ namespace DAL.Services
 {
     public class UserService : BaseService, IUserRepository<DAL.Entities.User>
     {
-        public UserService(IConfiguration config) : base(config , "Main-DB") { }
+        public UserService(IConfiguration config) : base(config, "Main-DB") { }
         public IEnumerable<User> Get()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))

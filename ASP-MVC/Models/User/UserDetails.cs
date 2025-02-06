@@ -8,33 +8,17 @@ namespace ASP_MVC.Models.User
     {
         [ScaffoldColumn(false)]
         public Guid User_Id { get; set; }
-
-
-
         [DisplayName("Prénom : ")]
         public string First_Name { get; set; }
-
-
-
         [DisplayName("Nom de famille : ")]
         public string Last_Name { get; set; }
-
-
-
         [DisplayName("E-mail : ")]
         [EmailAddress]
         public string Email { get; set; }
-
-
-
         [DisplayName("Date d'inscription : ")]
         [DataType(DataType.Date)]
         public DateOnly CreatedAt { get; set; }
-
-
-
-
-        [DisplayName ("Vos cocktails : ")]
+        [DisplayName("Vos cocktails : ")]
         public IEnumerable<CocktailListItem> Cocktails { get; set; }
     }
 }
